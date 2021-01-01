@@ -55,12 +55,17 @@ export function DBOperations(dbName: string, version: number, currentStore: stri
   // Readonly operations
   const getAll = useCallback(
     <T>() => new Promise<T[]>((resolve, reject) => {
+      debugger;
       openDatabase(dbName, version).then(db => {
+        debugger;
         validateBeforeTransaction(db, currentStore, reject);
         const { store } = createReadonlyTransaction(db, currentStore, resolve, reject);
         const request = store.getAll();
 
-        request.onerror = error => reject(error);
+        request.onerror = error => {
+          debugger;
+          reject(error);
+        };
 
         request.onsuccess = function({ target: { result } }: any) {
           resolve(result as T[]);

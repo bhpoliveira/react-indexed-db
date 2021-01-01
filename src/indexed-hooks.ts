@@ -24,13 +24,32 @@ export interface useIndexedDB {
   objectStore: string;
 }
 
-let indexeddbConfiguration: { version: number; name: string } = { version: null, name: null };
+class DatabaseConfiguration {
+  static databaseName: string;
+  static version: number;
+
+  static initialize = (databaseName: string, version: number) => {
+    DatabaseConfiguration.databaseName = databaseName;
+    DatabaseConfiguration.version = version;
+  };
+
+  static reset = () => {
+    DatabaseConfiguration.databaseName = null;
+    DatabaseConfiguration.version = null;
+  }
+
+  static uninitialized = () => {
+    return !DatabaseConfiguration.databaseName || !DatabaseConfiguration.version;
+  };
+}
 
 export function initDB({ name, version, objectStoresMeta }: IndexedDBProps) {
-  indexeddbConfiguration.name = name;
-  indexeddbConfiguration.version = version;
-  Object.freeze(indexeddbConfiguration);
+  DatabaseConfiguration.initialize(name, version);
   CreateObjectStore(name, version, objectStoresMeta);
+}
+
+export function resetDB() {
+  DatabaseConfiguration.reset();
 }
 
 export function useIndexedDB(
@@ -45,8 +64,15 @@ export function useIndexedDB(
   getByIndex: (indexName: string, key: any) => Promise<any>;
   clear: () => Promise<any>;
 } {
-  if (!indexeddbConfiguration.name || !indexeddbConfiguration.version) {
+  if (DatabaseConfiguration.uninitialized()) {
     throw new Error('Please, initialize the DB before the use.');
   }
-  return { ...DBOperations(indexeddbConfiguration.name, indexeddbConfiguration.version, objectStore) };
+
+  return {
+    ...DBOperations(
+      DatabaseConfiguration.name,
+      DatabaseConfiguration.version,
+      objectStore,
+    )
+  };
 }

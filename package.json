@@ -9,7 +9,8 @@
     "src/*"
   ],
   "scripts": {
-    "test": "karma start ./karma.conf.js",
+    "test": "jest",
+    "test:debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand --watch",
     "typedoc": "typedoc --out ./docs --mode modules --tsconfig ./tsconfig.json ./src/",
     "build": "webpack"
   },
@@ -42,9 +43,14 @@
     "react-scripts": "^3.1.1"
   },
   "devDependencies": {
+    "@testing-library/react-hooks": "^3.4.1",
+    "@types/jest": "^26.0.13",
     "@types/react": "^16.9.1",
     "@types/webpack": "^4.32.1",
     "awesome-typescript-loader": "^5.2.1",
+    "jest": "^26.4.2",
+    "react": "16.9.0",
+    "react-test-renderer": "^16.9.0",
     "source-map-loader": "^0.2.4",
     "ts-loader": "^6.0.4",
     "tslint": "~5.9.1",
@@ -52,5 +58,8 @@
     "typescript": "^3.1.6",
     "webpack": "^4.39.2",
     "webpack-cli": "^3.3.6"
+  },
+  "dependencies": {
+    "ts-jest": "^26.3.0"
   }
 }
